@@ -15,12 +15,14 @@ type Person struct {
 	Nickname string `json:"nickname"`
 }
 
+// postgres://vehymhxoblephe:a4f90fc5228989304adb753ad54971ce0d6cc41fcd77b3b785325f822ea2154f@ec2-107-22-245-82.compute-1.amazonaws.com:5432/d7vmobniqfeohe
+
 const (
-	host     = "localhost"
+	host     = "ec2-107-22-245-82.compute-1.amazonaws.com"
 	port     = 5432
-	dbname   = "go-rest-api"
-	user     = "febrilian"
-	password = "123123ed123e"
+	dbname   = "d7vmobniqfeohe"
+	user     = "vehymhxoblephe"
+	password = "a4f90fc5228989304adb753ad54971ce0d6cc41fcd77b3b785325f822ea2154f"
 )
 
 func OpenConnection() *sql.DB {
@@ -44,11 +46,13 @@ func OpenConnection() *sql.DB {
 
 func GETHandler(w http.ResponseWriter, r *http.Request) {
 	db := OpenConnection()
+	defer db.Close()
 
-	rows, err := db.Query("SELECT * FROM " + "person")
+	rows, err := db.Query("SELECT * FROM person")
 	if err != nil {
-		log.Fatal(err) // output: relation "person" does not exist
+		panic(err)
 	}
+	defer rows.Close()
 
 	var people []Person
 
@@ -63,8 +67,6 @@ func GETHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(peopleBytes)
 
-	defer rows.Close()
-	defer db.Close()
 }
 
 func POSTHandler(w http.ResponseWriter, r *http.Request) {
@@ -91,8 +93,10 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
 	http.HandleFunc("/", GETHandler)
 	http.HandleFunc("/insert", POSTHandler)
 	http.Handle("/client", http.FileServer(http.Dir("./static")))
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
