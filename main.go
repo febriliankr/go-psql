@@ -20,7 +20,7 @@ const (
 	port     = 5432
 	dbname   = "go-rest-api"
 	user     = "febrilian"
-	password = ""
+	password = "123123ed123e"
 )
 
 func OpenConnection() *sql.DB {
@@ -45,7 +45,7 @@ func OpenConnection() *sql.DB {
 func GETHandler(w http.ResponseWriter, r *http.Request) {
 	db := OpenConnection()
 
-	rows, err := db.Query("SELECT * FROM person")
+	rows, err := db.Query("SELECT * FROM " + "person")
 	if err != nil {
 		log.Fatal(err) // output: relation "person" does not exist
 	}
@@ -72,8 +72,10 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 
 	var p Person
 	err := json.NewDecoder(r.Body).Decode(&p)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Fatal(err.Error())
 		return
 	}
 
@@ -91,5 +93,6 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", GETHandler)
 	http.HandleFunc("/insert", POSTHandler)
+	http.Handle("/client", http.FileServer(http.Dir("./static")))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
