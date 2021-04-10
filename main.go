@@ -16,8 +16,6 @@ type Person struct {
 	Nickname string `json:"nickname"`
 }
 
-// postgres://vehymhxoblephe:a4f90fc5228989304adb753ad54971ce0d6cc41fcd77b3b785325f822ea2154f@ec2-107-22-245-82.compute-1.amazonaws.com:5432/d7vmobniqfeohe
-
 const (
 	host     = "ec2-107-22-245-82.compute-1.amazonaws.com"
 	port     = 5432
