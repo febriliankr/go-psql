@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 )
 
@@ -16,15 +17,16 @@ type Person struct {
 	Nickname string `json:"nickname"`
 }
 
-const (
-	host     = "ec2-107-22-245-82.compute-1.amazonaws.com"
+var (
+	host     = os.Getenv("DBHOST")
 	port     = 5432
-	dbname   = "d7vmobniqfeohe"
-	user     = "vehymhxoblephe"
-	password = "a4f90fc5228989304adb753ad54971ce0d6cc41fcd77b3b785325f822ea2154f"
+	dbname   = os.Getenv("DBNAME")
+	user     = os.Getenv("DBUSER")
+	password = os.Getenv("DBPASSWORD")
 )
 
 func OpenConnection() *sql.DB {
+
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=require",
 		host, port, user, password, dbname)
